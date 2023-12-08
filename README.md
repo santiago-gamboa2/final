@@ -1,46 +1,48 @@
-Paso 1: Instalación de Django y Channels
+# Paso 1: Instalación de Django y Channels
 
-1.1 Creación de entorno virtual:
+## 1.1 Creación de entorno virtual:
 
-bash
-Copy code
+```bash
 python -m venv myenv
-1.2 Activación del entorno virtual:
+```
 
-En Windows: myenv\Scripts\activate
-En Linux/Mac: source myenv/bin/activate
-1.3 Instalación de Django y Channels:
+## 1.2 Activación del entorno virtual:
 
-bash
-Copy code
-pip install Django channels
+`En Windows: myenv\Scripts\activate`
+
+`En Linux/Mac: source myenv/bin/activate`
+## 1.3 Instalación de Django y Channels:
+
+
+` pip install Django channels `
+
 Explicación:
 
 Django es un marco web de alto nivel para el desarrollo rápido de aplicaciones web.
 Channels extiende Django para manejar conexiones WebSocket y otras funcionalidades en tiempo real.
-Paso 2: Creación del proyecto Django
+# Paso 2: Creación del proyecto Django
 
-2.1 Creación del directorio y proyecto:
+## 2.1 Creación del directorio y proyecto:
 
-bash
-Copy code
+```bash
 mkdir mi_proyecto_chat
 cd mi_proyecto_chat
 django-admin startproject ChatApp
+```
 Explicación:
 
 startproject crea un nuevo proyecto Django llamado ChatApp.
-Paso 3: Estructura de carpetas y archivos
+# Paso 3: Estructura de carpetas y archivos
 
-3.1 Organización de archivos:
+## 3.1 Organización de archivos:
 
 Asegúrate de que la estructura de carpetas y archivos esté organizada correctamente.
-Paso 4: Configuración del archivo settings.py
+# Paso 4: Configuración del archivo settings.py
 
-4.1 Clave secreta y configuración de aplicaciones:
+## 4.1 Clave secreta y configuración de aplicaciones:
 
-python
-Copy code
+
+```python
 # ChatApp/settings.py
 
 INSTALLED_APPS = [
@@ -48,22 +50,23 @@ INSTALLED_APPS = [
     'channels',
     'chat.apps.ChatConfig',  # Asegúrate de incluir la aplicación 'chat'
 ]
-4.2 Configuración de ASGI_APPLICATION:
+```
+## 4.2 Configuración de ASGI_APPLICATION:
 
-python
-Copy code
+```python
 # ChatApp/settings.py
 
 ASGI_APPLICATION = 'ChatApp.asgi.application'
+
+```
 Explicación:
 
 ASGI_APPLICATION apunta al archivo asgi.py para la configuración de Channels.
-Paso 5: Configuración del archivo asgi.py
+# Paso 5: Configuración del archivo asgi.py
 
-5.1 Configuración de ASGI_APPLICATION:
+## 5.1 Configuración de ASGI_APPLICATION:
 
-python
-Copy code
+```python
 # ChatApp/asgi.py
 
 import os
@@ -84,17 +87,17 @@ application = ProtocolTypeRouter(
         ),
     }
 )
+```
 Explicación:
 
 asgi.py configura el manejo de conexiones WebSocket a través de Channels.
 ProtocolTypeRouter permite que diferentes protocolos (HTTP, WebSocket) se manejen de manera diferente.
 AuthMiddlewareStack agrega soporte para autenticación de Django a las conexiones WebSocket.
-Paso 6: Configuración del archivo urls.py
+# Paso 6: Configuración del archivo urls.py
 
-6.1 Configuración de rutas:
+## 6.1 Configuración de rutas:
 
-python
-Copy code
+```python
 # ChatApp/urls.py
 
 from django.contrib import admin
@@ -104,15 +107,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("chat.urls")),
 ]
+
+```
 Explicación:
 
 Configura las rutas para incluir las definidas en chat.urls y las proporcionadas por el administrador de Django.
-Paso 7: Creación de consumidores en chat/consumers.py
+# Paso 7: Creación de consumidores en chat/consumers.py
 
-7.1 Consumidor de WebSocket:
+## 7.1 Consumidor de WebSocket:
 
-python
-Copy code
+```python
 # chat/consumers.py
 
 import json
@@ -149,15 +153,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event["message"]
         username = event["username"]
         await self.send(text_data=json.dumps({"message": message, "username": username}))
+```
 Explicación:
 
 ChatConsumer es un consumidor de WebSocket que maneja la conexión, desconexión y recepción/envío de mensajes en tiempo real.
-Paso 8: Configuración de las rutas WebSocket en chat/routing.py
+# Paso 8: Configuración de las rutas WebSocket en chat/routing.py
 
-8.1 Definición de rutas de WebSocket:
+## 8.1 Definición de rutas de WebSocket:
 
-python
-Copy code
+```python
+
 # chat/routing.py
 
 from django.urls import path
@@ -166,17 +171,18 @@ from chat.consumers import ChatConsumer
 websocket_urlpatterns = [
     path("", ChatConsumer.as_asgi()),
 ]
+
+```
 Explicación:
 
 websocket_urlpatterns define la ruta de WebSocket que apunta al consumidor ChatConsumer.
-Paso 9: Creación de plantillas HTML
+# Paso 9: Creación de plantillas HTML
 
-9.1 Estructura de chatPage.html:
+## 9.1 Estructura de chatPage.html:
 
-html
-Copy code
-<!-- templates/chat/chatPage.html -->
 ```html
+<!-- templates/chat/chatPage.html -->
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -198,10 +204,9 @@ Copy code
 </body>
 </html>
 ```
-9.2 Estructura de LoginPage.html:
+## 9.2 Estructura de LoginPage.html:
 
-html
-Copy code
+```html
 <!-- templates/chat/LoginPage.html -->
 
 <!DOCTYPE html>
@@ -215,16 +220,16 @@ Copy code
     </form>
 </body>
 </html>
+```
 Explicación:
 
 chatPage.html contiene la interfaz del chat y el script para la funcionalidad de WebSocket.
 LoginPage.html tiene un formulario simple de inicio de sesión.
-Paso 10: Actualización de configuración en settings.py
+# Paso 10: Actualización de configuración en settings.py
 
-10.1 Configuración de plantillas:
+## 10.1 Configuración de plantillas:
 
-python
-Copy code
+```python
 # ChatApp/settings.py
 
 TEMPLATES = [
@@ -242,40 +247,40 @@ TEMPLATES = [
         },
     },
 ]
+```
 Explicación:
 
 Asegúrate de que la configuración de las plantillas de Django (TEMPLATES) esté correctamente configurada.
-Paso 11: Aplicación de migraciones y ejecución del servidor de desarrollo
+# Paso 11: Aplicación de migraciones y ejecución del servidor de desarrollo
 
-11.1 Aplicación de migraciones:
+## 11.1 Aplicación de migraciones:
 
-bash
-Copy code
+```bash
 python manage.py migrate
-11.2 Inicio del servidor de desarrollo:
+```
+## 11.2 Inicio del servidor de desarrollo:
 
-bash
-Copy code
+```bash
 python manage.py runserver
+```
 Explicación:
 
 migrate aplica las migraciones para crear las tablas de la base de datos.
 runserver inicia el servidor de desarrollo.
-Paso 12: Verificación
+# Paso 12: Verificación
 
-12.1 Acceso y verificación:
+## 12.1 Acceso y verificación:
 
 Abre tu navegador y ve a http://127.0.0.1:8000/.
 Inicia sesión con un usuario registrado o crea uno si aún no lo has hecho.
 Accede a la página de chat haciendo clic en el enlace proporcionado.
 Deberías ver la interfaz del chat y poder enviar mensajes en tiempo real.
 
-Paso 13: Script para la funcionalidad de chat en tiempo real en chatPage.html
+# Paso 13: Script para la funcionalidad de chat en tiempo real en chatPage.html
 
-13.1. Estructura del script:
+## 13.1. Estructura del script:
 
-html
-Copy code
+```html
 <!-- En templates/chat/chatPage.html -->
 
 <script>
@@ -310,7 +315,8 @@ Copy code
         document.querySelector("#id_chat_item_container").appendChild(div);
     };
 </script>
-13.2. Explicación del script:
+```
+## 13.2. Explicación del script:
 
 Se crea un nuevo WebSocket (chatSocket) que se conecta a la misma dirección que el servidor de desarrollo.
 onopen y onclose son manejadores de eventos que se activan cuando la conexión WebSocket se establece y se cierra, respectivamente.
